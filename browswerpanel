@@ -1,0 +1,42 @@
+public class BrowserPanel extends JPanel {
+    public BrowserPanel(CardLayout cardLayout, JPanel container, DoctorTableModel tableModel) {
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createTitledBorder("Doctor Browser"));
+
+        JTable doctorTable = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(doctorTable);
+        add(scrollPane, BorderLayout.CENTER);
+
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        searchPanel.add(new JLabel("Search by Name:"));
+        JTextField nameSearchField = new JTextField(15);
+        searchPanel.add(nameSearchField);
+
+        JButton nameSearchButton = new JButton("Name Search");
+        nameSearchButton.addActionListener(e -> tableModel.filterByName(nameSearchField.getText().trim().toLowerCase()));
+        
+        searchPanel.add(new JLabel("Search by Department:"));
+        JTextField departmentSearchField = new JTextField(15);
+        searchPanel.add(departmentSearchField);
+
+        JButton departmentSearchButton = new JButton("Dept Search");
+        departmentSearchButton.addActionListener(e -> tableModel.filterByDepartment(departmentSearchField.getText().trim().toLowerCase()));
+
+
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(e -> {
+        	nameSearchField.setText("");
+        	departmentSearchField.setText("");
+            tableModel.resetFilter();
+        });
+
+        searchPanel.add(nameSearchButton);
+        searchPanel.add(departmentSearchButton);
+        searchPanel.add(resetButton);
+        add(searchPanel, BorderLayout.NORTH);
+
+        JButton goToProfileButton = new JButton("Go to Profile Page");
+        goToProfileButton.addActionListener(e -> cardLayout.show(container, "Profile"));
+        add(goToProfileButton, BorderLayout.SOUTH);
+    }
+}
