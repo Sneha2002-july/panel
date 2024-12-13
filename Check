@@ -1,0 +1,67 @@
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+
+public class DoctorProfilePanel extends JPanel {
+    private JCheckBox[] dayCheckboxes;
+
+    public DoctorProfilePanel(CardLayout cardLayout, JPanel container, DoctorTableModel tableModel) {
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createTitledBorder("Doctor Profile"));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        initializeDepartmentSpecializationMap();
+
+        // Day checkboxes for availability
+        String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        dayCheckboxes = new JCheckBox[daysOfWeek.length];
+        JPanel daysPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        for (int i = 0; i < daysOfWeek.length; i++) {
+            dayCheckboxes[i] = new JCheckBox(daysOfWeek[i]);
+            daysPanel.add(dayCheckboxes[i]);
+        }
+
+        // Other input fields (as provided previously)...
+
+        // Replace "Available From Day" and "Available To Day" with checkboxes
+        addField(formPanel, gbc, "Available Days:", daysPanel, 11);
+
+        // Remaining code to add save, clear, and buttons...
+    }
+
+    private void saveDoctorProfile(DoctorTableModel tableModel) {
+        // Other validation and data retrieval...
+
+        StringBuilder availableDays = new StringBuilder();
+        for (JCheckBox checkBox : dayCheckboxes) {
+            if (checkBox.isSelected()) {
+                if (availableDays.length() > 0) {
+                    availableDays.append(", ");
+                }
+                availableDays.append(checkBox.getText());
+            }
+        }
+
+        if (availableDays.length() == 0) {
+            JOptionPane.showMessageDialog(this, "Please select at least one day for availability!", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Use `availableDays.toString()` for storing the available days
+        Doctor doctor = new Doctor(name, contact, email, address, dob, age, department, specialization,
+                qualification, formattedStartTime, formattedEndTime, availableDays.toString(), "", consultationFee);
+
+        tableModel.addDoctor(doctor);
+        JOptionPane.showMessageDialog(this, "Doctor Profile Saved Successfully!");
+    }
+
+    private void clearFields() {
+        // Other field clearing...
+        for (JCheckBox checkBox : dayCheckboxes) {
+            checkBox.setSelected(false);
+        }
+    }
+}
